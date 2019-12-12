@@ -24,23 +24,26 @@ app.use(bodyParser.json());
 app.post('/api/auth/create', async(req, res) => {
     const { username, password } = req.body;
 
+    var user = await db.find('users', { email : username });
+    if(user.length > 0){
+        return res.json({ status : false, message : 'user already exists!'})
+    }
     //NOTE: this is not safe in production. passwords should be hashed 
     //before saving to db. this for demo purposes only
     var result = await db.commit('users', { email : username, password });
+
     return res.json({ status : true, message : 'successfully created user', result })
 })
 
 /**
- * Authentication end-point
+ * Authentication end-point using JWT
  */
 app.post('/api/auth', async (req, res) => {
     const { username, password } = req.body;
 
     var result = await db.find('users', { email: username, password });
-    console.log(result);
-
     if (result.length === 0) {
-        return res.json({ status: false, message: 'Invalid username and password!' })
+        return res.json({ status: false, message: 'Invalid username or password!' })
     }
     else {
         let user = result.map(item => item)[0];
@@ -65,16 +68,23 @@ app.get('/api/auth', async (req, res) => {
     })
 })
 
+/**
+ * WebSocket Events 
+ */
 io.on('connection', socket => {
+    let clients = io.sockets.sockets
+    let connectedClients = Object.keys(clients).length;
+
+    if(connectedClients > 2){
+        socket.emit('disconnect', { status : false, message : 'connections cannot be more than 2'})
+        socket.disconnect();
+    }
+
     /**
      * Event to handle message sending
      */
     socket.on('MessageSent', data => {
-        let message = { id: data.id, user: data.user, message: data.message };
-        messages[data.id] = message;
-
-        console.log(message);
-        io.sockets.emit('Messages', messages);
+        sendMessage(data);
     })
 
     /**
@@ -127,22 +137,40 @@ io.on('connection', socket => {
         socket.emit('UserAuthenticatedSucceeded', { ok: true, user });
     })
 
-    /**
-     * Event to handle GroupCreation
-     */
-    socket.on('GroupCreated', group => {
-        groups[group.id] = group;
-        socket.join(group.id);
-        io.emit('Groups', Object.keys(groups));
-    })
-
-    /**
-     * Leave a group
-     */
-    socket.on('GroupLeft', groupId => {
-        socket.leave(groupId);
-    })
-
 });
 
+/**
+ * Group chat
+ */
+io.of('/group').on('connection', socket => {
+    let clients = io.of('/group').sockets
+    let connectedClients = Object.keys(clients).length;
+
+    if(connectedClients > 10){
+        socket.emit('disconnect', { status : false, message : 'connections to group cannot be more than 10'})
+        socket.disconnect();
+    }
+
+    socket.on('MessageSent', data => {
+        sendMessage(data);
+    })
+})
+
 http.listen(3450, () => console.log('listening on port 3450..'))
+
+
+
+/**
+ * Global function to send message
+ * @param {Object} data message data
+ * 
+ * Structure of data
+ * =================
+ * { id, user : <email>, message }
+ */
+function sendMessage(data) {
+    let message = { id: data.id, user: data.user, message: data.message };
+    messages[data.id] = message;
+    console.log(message);
+    io.sockets.emit('Messages', messages);
+}

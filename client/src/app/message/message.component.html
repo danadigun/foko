@@ -38,7 +38,8 @@
       <p>
         You are logged in as <br>
          <i><b>{{user}}</b></i>
-        <button (click)="logout()" class="btn btn-sm float-right">logout</button>
+         <button (click)="logout()" class="btn btn-sm float-right">logout</button>
+         <button style="margin-right:1em;" (click)="createGroup()" class="btn btn-sm float-right">+ join group</button>
       </p>
     </div>
     <form [formGroup]="messageForm" (ngSubmit)="send()" class="panel">

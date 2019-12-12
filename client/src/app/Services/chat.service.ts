@@ -3,7 +3,6 @@ import { Message } from '../models/message';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import axios from 'axios';
-import { Cookies } from 'js-cookies';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
@@ -22,6 +21,13 @@ export class ChatService {
             })
         })
     }
+    isConnectionsGreaterThanTwo(){
+        return Observable.create((observer) => {
+            this.socket.on('disconnect', (result) => {
+                observer.next(result);
+            })
+        })
+    }
 
     send(message: Message) {
         this.socket.emit('MessageSent', message)
@@ -34,10 +40,10 @@ export class ChatService {
     async register( { username, password }){
         let response = (await axios.post(`${this.url}/api/auth/create`, { username, password })).data;
         if(response.status){
-            alert('you have been registered');
+            alert(response.message);
             return await this.login({ username, password })
-        }
-        return alert('unable to register you')
+        }   
+        return alert(response.message)
     }
 
     async login({ username, password }) {
