@@ -1,0 +1,64 @@
+<div id="messageArea" class="columns">
+ 
+  <div *ngIf="!isAuthenticated" clas="column col-12" style="width:50%; margin-left:auto; margin-right:auto;">
+    <div>
+      <form *ngIf="hasAccount" [formGroup]="loginForm" (ngSubmit)="login()" class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><b>Sign In to Foko Chat API</b></div>
+        </div>
+        <div class="panel-body">
+          <input required id="email" formControlName="username" style="margin-bottom:1em;" class="form-input" type="text"
+            placeholder="Your username (email)">
+          <input required id="password" class="form-input" formControlName="password" type="password" placeholder="password">
+        </div>
+        <div class="panel-footer">
+          <a (click)="toggleHasAccount()" class="btn btn-link float-left">Create an account?</a>
+          <button class="btn btn-primary float-right">Login</button>
+        </div>
+      </form>
+
+      <form *ngIf="!hasAccount" [formGroup]="registerForm" (ngSubmit)="register()" class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><b>Register to create an account</b></div>
+        </div>
+        <div class="panel-body">
+          <input required id="email" formControlName="username" style="margin-bottom:1em;" class="form-input" type="text"
+            placeholder="Your username (email)">
+          <input required id="password" class="form-input" formControlName="password" type="password" placeholder="Preferred password">
+        </div>
+        <div class="panel-footer">
+          <a (click)="toggleHasAccount()" class="btn btn-link float-left">Already have an account?</a>
+          <button class="btn btn-primary float-right">Sign up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div *ngIf="isAuthenticated" class="column col-12" style="width:60%; margin-left:auto; margin-right:auto;">
+    <div style="padding-top:1em; font-size: 12pt;">
+      <p>
+        You are logged in as <br>
+         <i><b>{{user}}</b></i>
+        <button (click)="logout()" class="btn btn-sm float-right">logout</button>
+      </p>
+    </div>
+    <form [formGroup]="messageForm" (ngSubmit)="send()" class="panel">
+      <div class="panel-header">
+        <div class="panel-title">&nbsp;</div>
+      </div>
+      <div class="panel-nav">
+        <!-- navigation components: tabs, breadcrumbs or pagination -->
+      </div>
+      <div id="messages" class="panel-body">
+        <div *ngFor="let message of messages">
+          <strong>{{message?.user}}: </strong>{{message?.message}}
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="input-group">
+          <input formControlName="message" id="message" name="message" class="form-input" type="text"
+            placeholder="Type a message...">
+          <button class="btn btn-primary input-group-btn">Send</button>
+        </div>
+      </div>
+    </form>
+  </div>
