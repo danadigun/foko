@@ -11,7 +11,7 @@ import * as l from '../../environments/environment';
 export class ChatService {
     private socket;
     private groupSocket;
-    private url = 'http://localhost:3450/' || 'https://foko-server.herokuapp.com/';
+    private url = 'https://foko-server.herokuapp.com/';
 
     constructor(private cookieService: CookieService) {
         this.socket = io(`${this.url}home`);
