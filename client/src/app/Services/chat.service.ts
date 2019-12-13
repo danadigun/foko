@@ -4,8 +4,6 @@ import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import axios from 'axios';
 import { CookieService } from 'ngx-cookie-service';
-import * as p from '../../environments/environment.prod';
-import * as l from '../../environments/environment';
 
 @Injectable()
 export class ChatService {
