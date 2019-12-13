@@ -1,6 +1,7 @@
 # Foko Chat API
 
-By Daniel Adigun (Project Interview - Foko Retail)
+By Daniel Adigun (Project Interview - Foko Retail).
+
 Working deployment is available here : https://zealous-clarke-97d9c3.netlify.com/
 
 ## About
