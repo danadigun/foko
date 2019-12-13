@@ -8,10 +8,12 @@ import { CookieService } from 'ngx-cookie-service';
 @Injectable()
 export class ChatService {
     private socket;
+    private groupSocket;
     private url = 'http://localhost:3450';
 
     constructor(private cookieService : CookieService) {
-         this.socket = io(this.url); 
+         this.socket = io(`${this.url}/home`); 
+         this.groupSocket = io(`${this.url}/group`);
     }
 
     getMessages() {
@@ -21,6 +23,15 @@ export class ChatService {
             })
         })
     }
+
+    getGroupMessages(){
+        return Observable.create((observer) => {
+            this.groupSocket.on('Messages', (messages) => {
+                observer.next(messages)
+            })
+        })
+    }
+
     isConnectionsGreaterThanTwo(){
         return Observable.create((observer) => {
             this.socket.on('disconnect', (result) => {
@@ -29,8 +40,20 @@ export class ChatService {
         })
     }
 
+    isGroupConnectionsGreaterThanTen(){
+        return Observable.create((observer) => {
+            this.groupSocket.on('disconnect', (result) => {
+                observer.next(result);
+            })
+        })
+    }
+
     send(message: Message) {
         this.socket.emit('MessageSent', message)
+    }
+
+    sendToGroup(message : Message){
+        this.groupSocket.emit('MessageSent', message);
     }
 
     remove(id: String) {

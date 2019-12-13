@@ -14,7 +14,12 @@ export class MessageComponent implements OnInit, OnDestroy {
 
   messages: Array<Message> = [];
   message: Message;
+
+  groupMessage: Message;
+  groupMessages: Array<Message> = [];
+
   isRegistering: boolean = true;
+  isGroup: boolean = false;
 
   /**
    * Message form group
@@ -22,6 +27,14 @@ export class MessageComponent implements OnInit, OnDestroy {
   messageForm = new FormGroup({
     message: new FormControl('')
   });
+
+  /**
+   * Group Chat Message form group
+   */
+  groupMessageForm = new FormGroup({
+    message: new FormControl('')
+  });
+
 
   /**
    * Login form group
@@ -40,6 +53,8 @@ export class MessageComponent implements OnInit, OnDestroy {
   });
 
   connectionSubscription: Subscription;
+  groupConnectionSubscription: Subscription;
+
   constructor(private chatService: ChatService) { }
 
   ngOnInit() {
@@ -48,6 +63,12 @@ export class MessageComponent implements OnInit, OnDestroy {
       console.log(this.messages)
     })
 
+    this.chatService.getGroupMessages().subscribe((messages) => {
+      this.groupMessages = Object.values(messages);
+      console.log(this.groupMessages)
+    })
+
+
     this.connectionSubscription = this.chatService
       .isConnectionsGreaterThanTwo().subscribe(async (result) => {
         if (!result.status) {
@@ -55,12 +76,22 @@ export class MessageComponent implements OnInit, OnDestroy {
           await this.logout();
         }
       })
+      
+    this.groupConnectionSubscription = this.chatService
+      .isGroupConnectionsGreaterThanTen().subscribe(async (result) => {
+        if (!result.status) {
+          alert('More than 10 Connections cannot be allowed in a group. Please close browser');
+          await this.logout();
+        }
+      })
+
 
   }
 
-  async ngOnDestroy(){
-    if(this.connectionSubscription){
+  async ngOnDestroy() {
+    if (this.connectionSubscription) {
       this.connectionSubscription.unsubscribe()
+      this.groupConnectionSubscription.unsubscribe()
     }
     await this.logout();
   }
@@ -86,8 +117,21 @@ export class MessageComponent implements OnInit, OnDestroy {
     this.messageForm.reset();
   }
 
-  async createGroup() {
-    alert('create group')
+  sendToGroup() {
+    this.message = this.groupMessageForm.value;
+    this.message.id = uuid.v4();
+    this.message.user = this.user
+
+    this.chatService.sendToGroup(this.message);
+    this.groupMessageForm.reset();
+  }
+
+  async joinGroup() {
+    this.isGroup = true;
+  }
+
+  async leaveGroup() {
+    this.isGroup = false;
   }
 
 

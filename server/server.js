@@ -7,8 +7,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const users = {};
-const groups = {};
 const messages = {};
+const groupMessages = {};
 
 const sign_key = '359a6a04-d041-4ca3-96c0-386132fdcdca';
 
@@ -71,8 +71,8 @@ app.get('/api/auth', async (req, res) => {
 /**
  * WebSocket Events 
  */
-io.on('connection', socket => {
-    let clients = io.sockets.sockets
+io.of('/home').on('connection', socket => {
+    let clients = io.of('/home').sockets
     let connectedClients = Object.keys(clients).length;
 
     if(connectedClients > 2){
@@ -152,7 +152,7 @@ io.of('/group').on('connection', socket => {
     }
 
     socket.on('MessageSent', data => {
-        sendMessage(data);
+        sendMessageToGroup(data);
     })
 })
 
@@ -172,5 +172,20 @@ function sendMessage(data) {
     let message = { id: data.id, user: data.user, message: data.message };
     messages[data.id] = message;
     console.log(message);
-    io.sockets.emit('Messages', messages);
+    io.of('/home').emit('Messages', messages);
+}
+
+/**
+ * Global function to send message to group
+ * @param {Object} data message data
+ * 
+ * Structure of data
+ * =================
+ * { id, user : <email>, message }
+ */
+function sendMessageToGroup(data) {
+    let message = { id: data.id, user: data.user, message: data.message };
+    groupMessages[data.id] = message;
+    console.log(message);
+    io.of('/group').emit('Messages', groupMessages);
 }
