@@ -1,5 +1,4 @@
 # Foko Chat API
-Foko Chat Service 
 
 Working deployment is available here : https://zealous-clarke-97d9c3.netlify.com/
 
@@ -19,12 +18,12 @@ A simple chat service. Code repo contains two folders.
 ## How to use
 
 1.  Open two terminal windows
-2.  CD.. into 'server' and run 'node server' or 'nodemon server'
-3.  CD.. into 'client' and run 'ng serve -o'
+2.  CD.. into 'server' and run 'node server' or 'nodemon server' on 1st terminal
+3.  CD.. into 'client' and run 'ng serve -o' on 2nd terminal
 4.  Point your browser to http://localhost:3450
 5.  Create an account and start chatting.
 
 ##  Live Deployments
 
 1. Server endpoint is available on: https://foko-server.herokuapp.com/ and is hosted on heroku cloud
-2. Client chap app is available on: https://zealous-clarke-97d9c3.netlify.com/ and is hosted on Netlify 
+2. Client chat app is available on: https://zealous-clarke-97d9c3.netlify.com/ and is hosted on Netlify 
