@@ -19,6 +19,17 @@ app.use(cors());
 app.use(bodyParser.json());
 
 /**
+ * Default endpoint
+ */
+app.get('/', async (req, res) => {
+    res.json({
+        'version' : "v1.0-alpha",
+        'name' : 'Foko Chat API service.',
+        'mode':'listening .....'
+    })
+})
+
+/**
  * Register user
  */
 app.post('/api/auth/create', async(req, res) => {
@@ -156,7 +167,11 @@ io.of('/group').on('connection', socket => {
     })
 })
 
-http.listen(3450, () => console.log('listening on port 3450..'))
+/**
+ * Listen for connecitons 
+ */
+let port = process.env.PORT || 3450;
+http.listen(port, () => console.log(`listening on port ${port}..`))
 
 
 

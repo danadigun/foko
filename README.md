@@ -17,4 +17,9 @@ A simple chat service. Code repo contains two folders.
 1.  Open two terminal windows
 2.  CD.. into 'server' and run 'node server' or 'nodemon server'
 3.  CD.. into 'client' and run 'ng serve -o'
-4.  Create an account and start chatting.
+4.  Point your browser to http://localhost:3450
+5.  Create an account and start chatting.
+
+##  Live Deployments
+
+1. Server endpoint is available on: https://foko-server.herokuapp.com/
