@@ -49,7 +49,7 @@ app.post('api/auth/create', async(req, res) => {
 /**
  * Authentication end-point using JWT
  */
-app.post('api/auth', async (req, res) => {
+app.post('/api/auth', async (req, res) => {
     const { username, password } = req.body;
 
     var result = await db.find('users', { email: username, password });
@@ -67,7 +67,7 @@ app.post('api/auth', async (req, res) => {
 /**
  * Authorization token verification end-point
  */
-app.get('api/auth', async (req, res) => {
+app.get('/api/auth', async (req, res) => {
     let token = req.headers.authorization;
 
     jwt.verify(token, sign_key, function (err, decoded) {
@@ -153,7 +153,7 @@ io.of('/home').on('connection', socket => {
 /**
  * Group chat
  */
-io.of('group').on('connection', socket => {
+io.of('/group').on('connection', socket => {
     let clients = io.of('/group').sockets
     let connectedClients = Object.keys(clients).length;
 
@@ -187,7 +187,7 @@ function sendMessage(data) {
     let message = { id: data.id, user: data.user, message: data.message };
     messages[data.id] = message;
     console.log(message);
-    io.of('home').emit('Messages', messages);
+    io.of('/home').emit('Messages', messages);
 }
 
 /**
@@ -202,5 +202,5 @@ function sendMessageToGroup(data) {
     let message = { id: data.id, user: data.user, message: data.message };
     groupMessages[data.id] = message;
     console.log(message);
-    io.of('group').emit('Messages', groupMessages);
+    io.of('/group').emit('Messages', groupMessages);
 }

@@ -1,6 +1,10 @@
 # Foko Chat API
 Foko Chat Service 
 
+Working deployment is available here : https://zealous-clarke-97d9c3.netlify.com/
+
+## About
+
 A simple chat service. Code repo contains two folders. 
 1. client - contains front end client code built with angular
 2. server - server directory contains NodeJs server code developed with socket.io and ExpressJs
@@ -22,4 +26,5 @@ A simple chat service. Code repo contains two folders.
 
 ##  Live Deployments
 
-1. Server endpoint is available on: https://foko-server.herokuapp.com/
+1. Server endpoint is available on: https://foko-server.herokuapp.com/ and is hosted on heroku cloud
+2. Client chap app is available on: https://zealous-clarke-97d9c3.netlify.com/ and is hosted on Netlify 
