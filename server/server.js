@@ -32,7 +32,7 @@ app.get('/', async (req, res) => {
 /**
  * Register user
  */
-app.post('/api/auth/create', async(req, res) => {
+app.post('api/auth/create', async(req, res) => {
     const { username, password } = req.body;
 
     var user = await db.find('users', { email : username });
@@ -49,7 +49,7 @@ app.post('/api/auth/create', async(req, res) => {
 /**
  * Authentication end-point using JWT
  */
-app.post('/api/auth', async (req, res) => {
+app.post('api/auth', async (req, res) => {
     const { username, password } = req.body;
 
     var result = await db.find('users', { email: username, password });
@@ -67,7 +67,7 @@ app.post('/api/auth', async (req, res) => {
 /**
  * Authorization token verification end-point
  */
-app.get('/api/auth', async (req, res) => {
+app.get('api/auth', async (req, res) => {
     let token = req.headers.authorization;
 
     jwt.verify(token, sign_key, function (err, decoded) {

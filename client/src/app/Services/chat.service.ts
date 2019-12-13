@@ -4,16 +4,18 @@ import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import axios from 'axios';
 import { CookieService } from 'ngx-cookie-service';
+import * as p from '../../environments/environment.prod';
+import * as l from '../../environments/environment';
 
 @Injectable()
 export class ChatService {
     private socket;
     private groupSocket;
-    private url = 'http://localhost:3450';
+    private url = 'http://localhost:3450/' || 'https://foko-server.herokuapp.com/';
 
-    constructor(private cookieService : CookieService) {
-         this.socket = io(`${this.url}/home`); 
-         this.groupSocket = io(`${this.url}/group`);
+    constructor(private cookieService: CookieService) {
+        this.socket = io(`${this.url}home`);
+        this.groupSocket = io(`${this.url}group`);
     }
 
     getMessages() {
@@ -24,7 +26,7 @@ export class ChatService {
         })
     }
 
-    getGroupMessages(){
+    getGroupMessages() {
         return Observable.create((observer) => {
             this.groupSocket.on('Messages', (messages) => {
                 observer.next(messages)
@@ -32,7 +34,7 @@ export class ChatService {
         })
     }
 
-    isConnectionsGreaterThanTwo(){
+    isConnectionsGreaterThanTwo() {
         return Observable.create((observer) => {
             this.socket.on('disconnect', (result) => {
                 observer.next(result);
@@ -40,7 +42,7 @@ export class ChatService {
         })
     }
 
-    isGroupConnectionsGreaterThanTen(){
+    isGroupConnectionsGreaterThanTen() {
         return Observable.create((observer) => {
             this.groupSocket.on('disconnect', (result) => {
                 observer.next(result);
@@ -52,7 +54,7 @@ export class ChatService {
         this.socket.emit('MessageSent', message)
     }
 
-    sendToGroup(message : Message){
+    sendToGroup(message: Message) {
         this.groupSocket.emit('MessageSent', message);
     }
 
@@ -60,19 +62,19 @@ export class ChatService {
         this.socket.emit('RemoveMessage', id);
     }
 
-    async register( { username, password }){
-        let response = (await axios.post(`${this.url}/api/auth/create`, { username, password })).data;
-        if(response.status){
+    async register({ username, password }) {
+        let response = (await axios.post(`${this.url}api/auth/create`, { username, password })).data;
+        if (response.status) {
             alert(response.message);
             return await this.login({ username, password })
-        }   
+        }
         return alert(response.message)
     }
 
     async login({ username, password }) {
-        let response = (await axios.post(`${this.url}/api/auth`, { username, password })).data;
+        let response = (await axios.post(`${this.url}api/auth`, { username, password })).data;
         if (response.status) {
-            this.cookieService.set('token', JSON.stringify(response.data), 1 );
+            this.cookieService.set('token', JSON.stringify(response.data), 1);
             await this.setUser();
 
             return { status: true }
@@ -85,7 +87,7 @@ export class ChatService {
         let auth_response = JSON.parse(this.cookieService.get('token'));
         let token = auth_response.token;
 
-        let response = await fetch(`${this.url}/api/auth`, {
+        let response = await fetch(`${this.url}api/auth`, {
             headers: {
                 authorization: token
             }
@@ -97,7 +99,7 @@ export class ChatService {
 
     async logOut() {
         this.cookieService.delete('token')
-        this.cookieService.delete('user');        
+        this.cookieService.delete('user');
         window.location.href = '/'
     }
 
