@@ -4,6 +4,7 @@ Foko Chat Service
 A simple chat service. Code repo contains two folders. 
 1. client - contains front end client code built with angular
 2. server - server directory contains NodeJs server code developed with socket.io and ExpressJs
+3. Database - MongoDb
 
 ## Features
 
